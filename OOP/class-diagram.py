@@ -1,41 +1,40 @@
 import turtle as t
 
-t.setup(width=1600,height=1200) # resolution
-t.setworldcoordinates(0,1080,1440,0) # (0,0) at top-left
+t.setup(width=1800,height=1000, startx=0, starty=0) # resolution
+t.setworldcoordinates(0,1000,1800,0) # (0,0) coordinates at top-left
 t.hideturtle()
 t.pensize(5)
 #t.delay(0) # Uncomment this line if you want fast drawing
 
-#def draw_section(x, y, width, ):
-#    pass
+# VARIABLES CONSTANTES
+PADDING = 15 # Relleno
+FONT_SIZE = 30
 
 def class_diagram(x, y, name, attributes, methods):
-    # Variables
+    # Calcular el ancho del cuadro
     box_width = 0
-    padding = 15
-    font_size = 30
-    font_height = font_size * 1.4
-
-    # Class title box
-    title_box_bottom = y + padding + font_height
-
-    # Attributes box
-    attr_num = len(attributes) # number of attributes on the box
-    attr_box_top = title_box_bottom
-    # The height based on the n# of attributes
-    attr_box_bottom = attr_box_top + attr_num * (font_height + padding)
-
-    # Methods box
-    meth_num = len(methods)
-    meth_box_top = attr_box_bottom
-    meth_box_bottom = meth_box_top + meth_num * (font_height + padding)
-
-    # calculing box width
     for atr in attributes:
         if len(atr) > box_width:
-            box_width = len(atr) * font_size + padding
+            box_width = len(atr) * FONT_SIZE + PADDING
 
-    # Set up
+    # Variables
+    text_height = PADDING + FONT_SIZE * 1.4 # Altura de cada texto
+
+    # Class title box (altura)
+    title_box_bottom = y + text_height
+    print(text_height)
+
+    # Attributes box (altura)
+    attr_num = len(attributes) # number of attributes on the box
+    attr_box_top = title_box_bottom
+    attr_box_bottom = attr_box_top + attr_num * (text_height)
+
+    # Methods box (altura)
+    meth_num = len(methods)
+    meth_box_top = attr_box_bottom
+    meth_box_bottom = meth_box_top + (meth_num * text_height)
+
+    # Configuración inicial
     t.penup()
     t.teleport(x,y)
     
@@ -51,7 +50,7 @@ def class_diagram(x, y, name, attributes, methods):
 
     # .. Then write the name of the class.
     t.teleport(x + (box_width / 2), title_box_bottom)
-    t.write(name, align = 'center', font = ('serif', font_size, 'bold'))
+    t.write(name, align = 'center', font = ('serif', FONT_SIZE, 'bold'))
 
     # Draw the attributes box ...
     t.teleport(x, attr_box_top)
@@ -61,8 +60,10 @@ def class_diagram(x, y, name, attributes, methods):
 
     # ... Then write the attributes & types.
     for i,attr in enumerate(attributes):
-        t.teleport(x + padding, attr_box_top + (i + 1) * (font_height + padding))
-        t.write(attr, font = ('serif', font_size, 'normal'))
+        # Spacing between attribute
+        extra_attr = (i + 1) * text_height - PADDING/2 
+        t.teleport(x + PADDING, attr_box_top + extra_attr)
+        t.write(attr, font = ('serif', FONT_SIZE, 'normal'))
     
     # Draw the methods box ...
     t.teleport(x, meth_box_top)
@@ -72,12 +73,14 @@ def class_diagram(x, y, name, attributes, methods):
     
     # ... Then write the methods.
     for i,meth in enumerate(methods):
-        t.teleport(x + padding, meth_box_top + (i + 1) * (font_height + padding))
-        t.write(meth, font = ('serif', font_size, 'normal'))
+        # Spacing between methods
+        extra_meth = (i + 1) * text_height - PADDING/2 
+        t.teleport(x + PADDING, meth_box_top + extra_meth)
+        t.write(meth, font = ('serif', FONT_SIZE, 'normal'))
 
-
-# Careful when choosing the coordinates or else i'll overwrite other diagrams
-class_diagram(0, 50, "Car", ["+Brand: string", "+Name: string", "+Model: string", "+Color: String"], ["honk(time: int)"])
-class_diagram(500, 50, "Pet", ["+Name: string", "+Race: string", "+Age: int", "+Fur: string"], ["bark()", "sleep(time: int)", "eat()", "poo()"])
-class_diagram( 1000, 50, "Microwave", ["+Brand: string", "+Name: string", "+Model: int", "+Power Rating: string"], ["turnOn()", "turnOff()"])
+# Cuidado a la hora de elegir las coordenadas iniciales de cada diagrama de clase.
+# Recomendadación con valores predeterminados: x: 500, y: 60, por cada texto
+class_diagram(0, 0, "Car", ["+brand: string", "+name: string", "+model: string", "+color: string"], ["honk(time: int)"])
+class_diagram(500, 0, "Pet", ["+name: string", "+race: string", "+age: int", "+fur: string"], ["bark()", "sleep(time: int)", "eat()", "poo()"])
+class_diagram( 1000, 0, "Microwave", ["+brand: string", "+name: string", "+model: int", "+power rating: string"], ["turnOn()", "turnOff()"])
 t.mainloop()
