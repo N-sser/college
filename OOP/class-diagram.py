@@ -22,7 +22,6 @@ def class_diagram(x, y, name, attributes, methods):
 
     # Class title box (altura)
     title_box_bottom = y + text_height
-    print(text_height)
 
     # Attributes box (altura)
     attr_num = len(attributes) # number of attributes on the box
