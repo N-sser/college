@@ -1,4 +1,5 @@
 import tkinter as tk
+from abc import ABC, abstractmethod
 
 root = tk.Tk()
 root.title('PingPongUltimate')
@@ -19,7 +20,7 @@ game_canvas = tk.Canvas(root,
     )
 game_canvas.pack()
 
-class GameObject:
+class GameObject(ABC):
     def __init__(self, x, y, width, height, color):
         self.x = x
         self.y = y
@@ -28,9 +29,11 @@ class GameObject:
         self.color = color
         self.canvas_id = None
     
+    @abstractmethod
     def render(self, canvas):
         pass
 
+    @abstractmethod
     def update_position(self, canvas):
         pass
 
@@ -49,14 +52,14 @@ class Ball(GameObject):
             fill = self.color)
     
     def bounce_vertical(self):
-        self.speed_y *= -1
+        self.dy *= -1
     
     def bounce_horizontal(self, speed_increase = 1.05):
-        self.speed_x *= -speed_increase
+        self.dx *= -speed_increase
 
     def update_position(self, canvas):
-        self.x += self.speed_x
-        self.y += self.speed_y
+        self.x += self.dx
+        self.y += self.dy
         canvas.coords(self.canvas_id, 
             self.x, self.y,
             self.x + self.radius * 2, self.y + self.radius * 2)
