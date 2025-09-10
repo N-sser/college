@@ -9,85 +9,110 @@ s = ttk.Style()
 s.configure('black.TLabel', background = '#000000', foreground = '#ffffff', padding = (45, 30))
 s.configure('white.TLabel', background = '#ffffff', foreground = '#000000', padding = (45, 30))
 s.configure('robot.TLabel', background = 'green', foreground = '#000000', padding = (10, 10))
+s.configure('indicator.TLabel', background = 'blue', foreground = '#000000', padding = (100, 50))
 
-def up(event):
-    position = robot.grid_info()
-    if  0 < position['row']:
-        print('Move up!')
-        robot.grid(row = position['row'] - 1)
-        robot_row = robot.grid_info()['row']
-        robot_col = robot.grid_info()['column']
-        tile_color = array[robot_row][robot_col]
-        print(f"Robot is at ({robot_row}, {robot_col}) on a {tile_color} tile")
+class Square:
+    def __init__(self, parent_window, style, row, column):
+        self.window= parent_window
+        self.style: str = style
+        self.row: int = row
+        self.col: int = column
 
-def right(event):
-    position = robot.grid_info()
-    if position['column'] < 7:
-        print('Move right!')
-        robot.grid(column = position['column']  + 1)
-        robot_row = robot.grid_info()['row']
-        robot_col = robot.grid_info()['column']
-        tile_color = array[robot_row][robot_col]
-        print(f"Robot is at ({robot_row}, {robot_col}) on a {tile_color} tile")
+        # Creating and placing the class of the widget
+        self.widget = ttk.Label(self.window, style = self.style)
+        self.widget.grid(row = self.row, column = self.col)
 
-def left(event):
-    position = robot.grid_info()
-    if 0 < position['column']:
-        print('Move left!')
-        robot.grid(column = position['column']  - 1)
-        robot_row = robot.grid_info()['row']
-        robot_col = robot.grid_info()['column']
-        tile_color = array[robot_row][robot_col]
-        print(f"Robot is at ({robot_row}, {robot_col}) on a {tile_color} tile")
+class Board:
+    def __init__(self, rows, cols):
+        self.board_rows: int = rows
+        self.board_columns: int = cols
+        self.squares= []
 
-def down(event):
-    position = robot.grid_info()
-    if position['row'] < 7:
-        print('Move down!')
-        robot.grid(row = position['row'] + 1)
-        robot_row = robot.grid_info()['row']
-        robot_col = robot.grid_info()['column']
-        tile_color = array[robot_row][robot_col]
-        print(f"Robot is at ({robot_row}, {robot_col}) on a {tile_color} tile")
+    def generate(self):
+        count = True
 
-count = True
-array = []
+        for i in range(self.board_rows):
+            column_of_squares = []
+            for j in range(self.board_columns):
+                if count:
+                    white_square = Square(root, 'white.TLabel', i, j)
+                    column_of_squares.append(white_square)
+                    count = False
+                else:
+                    black_square = Square(root, 'black.TLabel', i, j)
+                    column_of_squares.append(black_square)
+                    count = True
 
-for i in range(8):
-    column = []
-    for j in range(8):
-        white = ttk.Label(root, style = 'white.TLabel')
-        black = ttk.Label(root, style = 'black.TLabel')
-        
-        if count:
-            white.grid(row = i, column = j)
-            #print(white.grid_info())
-            column.append('white')
-            count = False
-        else:
-            black.grid(row = i, column = j)
-            #print(black.grid_info())
-            column.append('black')
-            count = True
-            
-    array.append(column)
-    count = not count
+            self.squares.append(column_of_squares)
+            count = not count
     
-#print(array)
+class Robot:
+    def __init__(self, parent_window, style, row = 0, column = 0):
+        self.window = parent_window
+        self.style: str = style
+        self.row: int = row
+        self.col: int = column
+        
+        # Creating it and placing the robot
+        self.widget = ttk.Label(self.window, style = self.style)
+        self.widget.grid(row = self.row, column = self.col)
+        
+    def get_square_position(self):
+        return board.squares[self.row][self.col]
 
-robot = ttk.Label(root, style = 'robot.TLabel')
-robot.grid(row = 4, column = 4)
+    def get_color(self):
+        return 'white' if self.get_square_position().style == 'white.TLabel' else 'black' 
 
-robot_row = robot.grid_info()['row']
-robot_col = robot.grid_info()['column']
-tile_color = array[robot_row][robot_col]
-print(f"Robot is at ({robot_row}, {robot_col}) on a {tile_color} tile")
+    def left(self, event):
+        if  0 < self.col:
+            self.col -= 1
+            self.widget.grid(column = self.col)
+            info.update_text()
+            #print(self.get_color())
 
-robot.bind('<KeyPress-Left>', left)
-robot.bind('<KeyPress-Down>', down)
-robot.bind('<KeyPress-Up>', up)
-robot.bind('<KeyPress-Right>', right)
+    def down(self, event):
+        if self.row < board.board_rows - 1:
+            self.row += 1
+            self.widget.grid(row = self.row)
+            info.update_text()
+    
+    def up(self, event):
+        if 0 < self.row:
+            self.row -= 1
+            self.widget.grid(row = self.row)
+            info.update_text()
 
-robot.focus()
+    def right(self, event):
+        if  self.col < board.board_columns - 1:
+            self.col += 1
+            self.widget.grid(column= self.col)
+            info.update_text()
+
+class Indicator:
+    def __init__(self, parent_window, style):
+        self.window = parent_window
+        self.style = style
+        self.side = 'bottom'
+        self.expand = True
+        
+        self.widget = ttk.Label(self.window, style= self.style)
+        self.widget.grid(column = board.board_columns + 1, row = board.board_rows)   
+        #self.widget.pack(side = self.side, expand = self.expand)   
+    
+    def update_text(self):
+        self.widget.configure(text = f'{alexa.get_color()}')
+
+
+board = Board(8,8)
+board.generate()
+
+alexa = Robot(root, 'robot.TLabel')
+
+info = Indicator(root, 'indicator.TLabel')
+
+root.bind('<KeyPress-s>', alexa.down)
+root.bind('<KeyPress-a>', alexa.left)
+root.bind('<KeyPress-w>', alexa.up)
+root.bind('<KeyPress-d>', alexa.right)
 
 root.mainloop()
