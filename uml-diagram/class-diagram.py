@@ -1,6 +1,6 @@
 import turtle as t
 
-t.setup(width=1800,height=1000, startx=0, starty=0) # resolution
+t.setup(width=0.75,height=0.7, startx=0, starty=0) # resolution
 t.setworldcoordinates(0,1000,1800,0) # (0,0) coordinates at top-left
 t.hideturtle()
 t.pensize(5)
@@ -81,5 +81,5 @@ def class_diagram(x, y, name, attributes, methods):
 # Recomendadación con valores predeterminados: x: 500, y: 60, por cada texto
 class_diagram(0, 0, "Car", ["+brand: string", "+name: string", "+model: string", "+color: string"], ["honk(time: int)"])
 class_diagram(500, 0, "Pet", ["+name: string", "+race: string", "+age: int", "+fur: string"], ["bark()", "sleep(time: int)", "eat()", "poo()"])
-class_diagram( 1000, 0, "Microwave", ["+brand: string", "+name: string", "+model: int", "+power rating: string"], ["turnOn()", "turnOff()"])
+class_diagram( 1000, 0, "Microwave", ["+brand: string", "+name: string", "+model: int", "+power rating: string"], ["turn_on()", "turn_off()"])
 t.mainloop()
