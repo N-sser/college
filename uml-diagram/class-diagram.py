@@ -78,7 +78,7 @@ def class_diagram(x, y, name, attributes, methods):
         t.write(meth, font = ('serif', FONT_SIZE, 'normal'))
 
 # Cuidado a la hora de elegir las coordenadas iniciales de cada diagrama de clase.
-# Recomendadación con valores predeterminados: x: 500, y: 60, por cada texto
+# Recomendadación con valores predeterminados: x: 500, y: 60, por cada diagrama de clase.
 class_diagram(0, 0, "Car", ["+brand: string", "+name: string", "+model: string", "+color: string"], ["honk(time: int)"])
 class_diagram(500, 0, "Pet", ["+name: string", "+race: string", "+age: int", "+fur: string"], ["bark()", "sleep(time: int)", "eat()", "poo()"])
 class_diagram( 1000, 0, "Microwave", ["+brand: string", "+name: string", "+model: int", "+power rating: string"], ["turn_on()", "turn_off()"])
