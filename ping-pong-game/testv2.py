@@ -28,33 +28,33 @@ class GameObject(ABC):
         self.height = height
         self.color = color
         self.canvas_id = None
-    
+
     @abstractmethod
     def render(self, canvas):
         pass
 
     @abstractmethod
     def update_position(self, canvas):
+        print("What this does?")
         pass
 
 class Ball(GameObject):
-    def __init__(self, x, y, radius, color, speed_x = 0, speed_y = 0):
+    def __init__(self, x, y, radius, color, dx=5, dy=5):
         super().__init__(x, y, radius*2, radius*2, color)
-        
-        self.radius= radius
-        self.speed_x = speed_x
-        self.speed_y = speed_y
-        
+
+        self.dx = dx
+        self.dy = dy
+
     def render(self, canvas):
         self.canvas_id = canvas.create_oval(
             self.x, self.y,
             self.x + self.width, self.y + self.height,
             fill = self.color)
-    
+
     def bounce_vertical(self):
         self.dy *= -1
-    
-    def bounce_horizontal(self, speed_increase = 1.05):
+
+    def bounce_horizontal(self, speed_increase=1.05):
         self.dx *= -speed_increase
 
     def update_position(self, canvas):
@@ -62,22 +62,22 @@ class Ball(GameObject):
         self.y += self.dy
         canvas.coords(self.canvas_id, 
             self.x, self.y,
-            self.x + self.radius * 2, self.y + self.radius * 2)
+            self.x + self.width, self.y + self.height)
 
 class Racket(GameObject):
-    def __init__(self, x, y, width, height, color, speed = 15):
+    def __init__(self, x, y, width, height, color, dy=15):
         super().__init__(x, y, width, height, color)
-        
-        self.speed_y: float = speed
-        
+
+        self.dy: float = dy
+
     def render(self, canvas):
         self.canvas_id = canvas.create_rectangle(
             self.x, self.y,
             self.x + self.width, self.y + self.height,
             fill = self.color)
-    
+
     def update_position(self, canvas):
-        self.y += self.speed_y
+        self.y += self.dy
         canvas.coords(self.canvas_id,
             self.x, self.y,
             self.x + self.width, self.y + self.height)
@@ -93,13 +93,12 @@ class Net(GameObject):
             fill = self.color,
             #dash = )
         )
-    
+
     def update_position(self, canvas):
         return super().update_position(canvas)
 
 ball = Ball(100, 100, 25, 'pink')
 ball.render(game_canvas)
-ball.update_position(game_canvas)
 
 left_racket = Racket(400, 400 , 20 ,150, 'orange', 10)
 left_racket.render(game_canvas)
@@ -108,4 +107,14 @@ left_racket.update_position(game_canvas)
 net = Net(window_width / 2, 0, 100, window_height, 'white')
 net.render(game_canvas)
 net.update_position(game_canvas)
+
+#for i in range(10):
+#    ball.update_position(game_canvas)
+
+def game_loop():
+    ball.update_position(game_canvas)
+
+    root.after(1000 // 60, game_loop)
+
+
 root.mainloop()

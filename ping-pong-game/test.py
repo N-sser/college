@@ -575,6 +575,7 @@ s.configure("TButton",
     borderwidth = 3,
     font = "Segoe_UI 28",
     padding=(25, 5, 25, 5))
+
 s.map('TButton', 
     background=[('active', '#504946')],
     foreground=[('active', '#89b482')],
